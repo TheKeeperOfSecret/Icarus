@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
     private Renderer sunLightsRenderer;
     private Vector3 targetPos = Vector3.zero;
 
+    [Header("Clouds Management")]
+    public GameObject[] clouds;
+    private KBController[] cloudControllers;
+
     public enum GameState
     {
         Menu,
@@ -96,6 +100,8 @@ public class GameManager : MonoBehaviour
 
         if (sunLights != null)
             sunLightsRenderer = sunLights.GetComponent<Renderer>();
+
+        InitializeClouds();
     }
 
     void Update()
@@ -105,10 +111,14 @@ public class GameManager : MonoBehaviour
             StartGame();
         }
 
-        if (currentState == GameState.Playing && targetPos.y < player.transform.position.y)
+        if (currentState == GameState.Playing)
         {
-            UpdateCameraAndBackground();
-            UpdateDamageLine();
+            if (targetPos.y < player.transform.position.y)
+            {
+                UpdateCameraAndBackground();
+                UpdateDamageLine();
+            }
+            UpdateCloudsPosition();
         }
     }
 
@@ -155,6 +165,9 @@ public class GameManager : MonoBehaviour
             playerMovement.enabled = true;
             playerMovement.isJumping = true;
         }
+
+        RandomizeCloudDirections();
+        StartCoroutine(CloudDirectionLoop());
     }
 
     void UpdateDamageLine()
@@ -246,5 +259,96 @@ public class GameManager : MonoBehaviour
         currentState = GameState.Restarting;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         currentState = GameState.Menu;
+    }
+
+    void InitializeClouds()
+    {
+        clouds = new GameObject[18];
+        cloudControllers = new KBController[18];
+
+        for (int i = 1; i <= 18; i++)
+        {
+            string cloudName = "Cloud" + i;
+            clouds[i - 1] = GameObject.Find(cloudName);
+
+            if (clouds[i - 1] != null)
+            {
+                cloudControllers[i - 1] = clouds[i - 1].GetComponent<KBController>();
+            }
+        }
+
+        SetRandomCloudDirections();
+    }
+
+    void SetRandomCloudDirections()
+    {
+        for (int i = 0; i < clouds.Length; i++)
+        {
+            if (cloudControllers[i] != null)
+            {
+                bool moveRight = Random.Range(0, 2) == 0;
+
+                cloudControllers[i].rightAuto = moveRight;
+                cloudControllers[i].leftAuto = !moveRight;
+
+                StartCoroutine(StartCloudMovementWithDelay(cloudControllers[i], Random.Range(0f, 2f)));
+            }
+        }
+    }
+
+    void UpdateCloudsPosition()
+    {
+        for (int i = 0; i < clouds.Length; i++)
+        {
+            if (clouds[i].transform.position.x > 20f) 
+                clouds[i].transform.position = new Vector3(
+                    -20f, 
+                    clouds[i].transform.position.y, 
+                    clouds[i].transform.position.z
+                    );
+            if (clouds[i].transform.position.x < -20f) 
+                clouds[i].transform.position = new Vector3(
+                    20f, 
+                    clouds[i].transform.position.y, 
+                    clouds[i].transform.position.z
+                    );
+        }
+    }
+
+    IEnumerator StartCloudMovementWithDelay(KBController cloudController, float delay)
+    {
+        bool originalRight = cloudController.rightAuto;
+        bool originalLeft = cloudController.leftAuto;
+
+        cloudController.rightAuto = false;
+        cloudController.leftAuto = false;
+
+        yield return new WaitForSeconds(delay);
+
+        cloudController.rightAuto = originalRight;
+        cloudController.leftAuto = originalLeft;
+    }
+
+    public void RandomizeCloudDirections()
+    {
+        SetRandomCloudDirections();
+    }
+
+    private IEnumerator CloudDirectionLoop()
+    {
+        while (currentState == GameState.Playing)
+        {
+            yield return new WaitForSeconds(Random.Range(2f, 5f));
+
+            for (int i = 0; i < clouds.Length; i++)
+            {
+                if (cloudControllers[i] != null)
+                {
+                    bool moveRight = Random.Range(0, 2) == 0;
+                    cloudControllers[i].rightAuto = moveRight;
+                    cloudControllers[i].leftAuto = !moveRight;
+                }
+            }
+        }
     }
 }

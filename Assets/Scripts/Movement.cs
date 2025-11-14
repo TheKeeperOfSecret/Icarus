@@ -107,7 +107,8 @@ public class Movement : MonoBehaviour
         
         if (collision.gameObject.TryGetComponent<FinalCutsceneController>(out FinalCutsceneController finalCutsceneController))
         {
-            finalCutsceneController.PlayCutscene();
+            if (GameManager.Instance.currentState != GameManager.GameState.GameOver)
+                finalCutsceneController.PlayCutscene();
         }
     }
 }

@@ -9,27 +9,34 @@ public class KBController : MonoBehaviour
     public bool leftAuto = false;
     public bool upAuto = false;
 
+    public InputManager inputManager;
+
+    void Start()
+    {
+        inputManager = GetComponent<InputManager>();
+    }
+
     public int RightHold()
     {
-        if (InputManager.GetKey(KeyCode.D) || (autoControl && rightAuto))
+        if (inputManager.GetKey(KeyCode.D) || (autoControl && rightAuto))
             return 1;
-        if (InputManager.GetKeyUp(KeyCode.D))
+        if (inputManager.GetKeyUp(KeyCode.D))
             return -1;
         return 0;
     }
 
     public int LeftHold()
     {
-        if (InputManager.GetKey(KeyCode.A) || (autoControl && leftAuto))
+        if (inputManager.GetKey(KeyCode.A) || (autoControl && leftAuto))
             return 1;
-        if (InputManager.GetKeyUp(KeyCode.A))
+        if (inputManager.GetKeyUp(KeyCode.A))
             return -1;
         return 0;
     }
 
     public int UpDown()
     {
-        if (InputManager.GetKeyDown(KeyCode.W) || (autoControl && upAuto))
+        if (inputManager.GetKeyDown(KeyCode.W) || (autoControl && upAuto))
             return 1;
         return 0;
     }

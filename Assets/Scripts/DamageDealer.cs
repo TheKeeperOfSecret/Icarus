@@ -10,7 +10,6 @@ public class DamageDealer : MonoBehaviour
     public void DealDamage(GameObject target)
     {
         if (GameManager.Instance.currentState == GameManager.GameState.GameOver) return;
-        InputManager.inputBlocked = true;
 
         Movement movement = target.GetComponent<Movement>();
         if (movement != null)
@@ -25,6 +24,7 @@ public class DamageDealer : MonoBehaviour
         KBController controller = target.GetComponent<KBController>();
         if (controller != null)
         {
+            controller.inputManager.inputBlocked = true;
             controller.autoControl = true;
 
             if (target.transform.position.x >= 0)
