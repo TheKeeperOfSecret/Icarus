@@ -1,0 +1,50 @@
+.DS_Store
+
+/Logs/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uilds/
+/[Bb]uild/
+/[Ll]ibrary/
+/[Uu]serSettings/
+/Assets/AssetStoreTools*
+/ServerData/
+# Visual Studio 2015 cache directory
+/.vs/
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+
+# Unity3D generated meta files
+*.pidb.meta
+*.unitypackage.meta
+*.pdb.meta
+
+# Unity3D Generated File On Crash Reports
+sysinfo.txt
+
+# Builds
+*.apk
+*.unitypackage
+recording_*.mp4
+
+# Packages/manifest.json
+UserSettings
+Recordings
+Assets/HMSCollection
+*.csproj
+Hockey.sln
+.idea/.idea.Hockey
+*.csproj
+vendor
+.bundle/config
